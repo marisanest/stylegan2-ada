@@ -1,0 +1,55 @@
+project:
+  name: stylegan2-ada
+  syncFilters:
+    - exclude:
+        - .git/*
+        - .idea/*
+        - '*/__pycache__/*'
+        - out/*
+
+containers:
+  - &DEFAULT_CONTAINER
+    projectDir: /workspace/project
+    file: docker/Dockerfile.spotty-gpu
+    volumeMounts:
+      - name: workspace
+        mountPath: /workspace
+    env:
+      PYTHONPATH: /workspace/project
+    ports:
+      # tensorboard
+      - containerPort: 6006
+        hostPort: 6006
+      # jupyter
+      - containerPort: 8888
+        hostPort: 8888
+
+  - <<: *DEFAULT_CONTAINER
+    name: local
+    file: docker/Dockerfile.spotty-local
+    runAsHostUser: true
+
+instances:
+  - name: aws-1
+    provider: aws
+    parameters:
+      region: us-east-1
+      instanceType: p2.xlarge
+      spotInstance: true
+      ports: [6006, 6007, 8888]
+      volumes:
+        - name: workspace
+          parameters:
+            size: 100
+
+  - name: local-1
+    provider: local
+    parameters:
+      containerName: local
+
+scripts:
+  tensorboard: |
+    tensorboard --bind_all --port 6006 --logdir /workspace/project/training/{{MODEL}}
+
+  jupyter: |
+    CUDA_VISIBLE_DEVICES="" jupyter notebook --allow-root --ip 0.0.0.0 --notebook-dir=/workspace/project

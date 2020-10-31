@@ -1,0 +1,12 @@
+FROM tensorflow/tensorflow:1.15.4-py3-jupyter
+
+ARG USER_ID
+ARG GROUP_ID
+
+# add user
+RUN groupadd --gid $GROUP_ID spotty \
+ && useradd --create-home --uid $USER_ID --gid $GROUP_ID --shell /bin/bash --no-log-init spotty
+
+# install requirements
+COPY requirements-spotty.txt requirements.txt
+RUN pip install -r requirements.txt
