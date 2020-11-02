@@ -53,3 +53,11 @@ scripts:
 
   jupyter: |
     CUDA_VISIBLE_DEVICES="" jupyter notebook --allow-root --ip 0.0.0.0 --notebook-dir=/workspace/project
+
+  projector-ffhq: |
+    python projector.py --outdir={{OUTPUT_DIR}} --target={{TARGET}} \
+        --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada/pretrained/ffhq.pkl
+
+  projector-metfaces: |
+    python projector.py --outdir={{OUTPUT_DIR}} --target={{TARGET}} \
+        --network=https://nvlabs-fi-cdn.nvidia.com/stylegan2-ada/pretrained/metfaces.pkl
