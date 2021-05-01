@@ -33,7 +33,7 @@ instances:
   - name: aws-1
     provider: aws
     parameters:
-      region: us-east-1
+      region: eu-central-1
       instanceType: p2.xlarge
       spotInstance: true
       ports: [6006, 6007, 8888]
